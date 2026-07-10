@@ -1,4 +1,6 @@
 .idea
 .env
 postgres-data
-out
+split-core/out
+/go.work
+/go.work.sum

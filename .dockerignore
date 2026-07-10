@@ -4,8 +4,8 @@
 .vscode
 postgres_data
 redis_data
-out
+split-core/out
 *.dump
-.env
+split-core/.env
 bot
 

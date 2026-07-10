@@ -27,4 +27,5 @@ jobs:
         version: latest
 
     - name: Run Tests
+      working-directory: ./split-core
       run: go test -v ./internal/usecase/...
