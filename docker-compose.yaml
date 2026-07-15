@@ -29,6 +29,9 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+
     volumes:
       - ${PROJECT_ROOT}/out:/app/out
     user: "${UID}:${GID}"
@@ -63,7 +66,12 @@ services:
       redis-server
       --requirepass ${REDIS_PASS}
       --appendonly yes
-
+  split-notify:
+    build:
+      context: ./split-notify
+      dockerfile: Dockerfile
+    depends_on:
+      - app
 networks:
   default:
     name: split_network
