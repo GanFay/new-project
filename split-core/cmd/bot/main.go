@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log/slog"
+	"net"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,11 +15,16 @@ import (
 	"github.com/ganfay/split-core/internal/repository/postgres"
 	"github.com/ganfay/split-core/internal/repository/redisRepository"
 	"github.com/ganfay/split-core/internal/usecase"
-
+	pb "github.com/ganfay/split-proto"
 	"github.com/redis/go-redis/v9"
+	"google.golang.org/grpc"
 
 	tele "gopkg.in/telebot.v4"
 )
+
+type server struct {
+	pb.UnimplementedPingServer
+}
 
 func main() {
 	ctx := context.Background()
@@ -72,11 +78,27 @@ func main() {
 	slog.Info("Stopping application...", "signal", sign.String())
 
 	b.Stop()
-
+	lis, err := net.Listen("tcp", ":50001")
+	if err != nil {
+		slog.Error("failed to listen port", "err", err)
+		return
+	}
+	s := grpc.NewServer()
+	pb.RegisterPingServer(s, &server{})
+	err = s.Serve(lis)
+	if err != nil {
+		slog.Error("failed to log", "err", err)
+		return
+	}
 	pool.Close()
 	err = rdb.Close()
 	if err != nil {
 		panic("Failed to close the redis database: " + err.Error())
 	}
 	slog.Info("Application stopped gracefully.")
+}
+
+func (s *server) SayPing(_ context.Context, in *pb.PingRequest) (*pb.PingReply, error) {
+	slog.Info("Received: %v", in.GetName())
+	return &pb.PingReply{Message: "Ping " + in.GetName()}, nil
 }
