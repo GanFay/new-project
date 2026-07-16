@@ -21,14 +21,14 @@ func LoggingMiddleware() tele.MiddlewareFunc {
 			duration := time.Since(start)
 
 			if err != nil {
-				slog.Error("request failed",
+				slog.Error("Request failed",
 					slog.Int64("user_id", user.ID),
 					slog.String("data", text),
 					slog.String("duration", duration.String()),
 					slog.Any("err", err),
 				)
 			} else {
-				slog.Info("request processed",
+				slog.Info("Request processed",
 					slog.Int64("user_id", user.ID),
 					slog.String("data", text),
 					slog.String("duration", duration.String()),

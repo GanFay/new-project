@@ -62,7 +62,7 @@ lint:
 	@cd split-core && golangci-lint run
 
 proto-generate:
-	@protoc --go_out=. --go-grpc_out=. proto/notification.proto
+	@cd proto && protoc --go_out=. --go-grpc_out=. notification.proto
 
 run-services:
 	@mkdir -p "split-core/out/logs"
@@ -73,3 +73,6 @@ dev-rerun:
 	@make env-up
 	sleep 2
 	@make migrate-up
+
+run-notify:
+	@docker compose up -d --build split-notify

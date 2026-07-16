@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"log/slog"
 	"math"
@@ -13,10 +14,16 @@ import (
 type FundUsecase struct {
 	fundRepository     repository.FundRepository
 	purchaseRepository repository.PurchaseRepository
+	eventPublisher     repository.EventPublisher
 }
 
-func NewFundUsecase(fr repository.FundRepository, pr repository.PurchaseRepository) *FundUsecase {
-	return &FundUsecase{fundRepository: fr, purchaseRepository: pr}
+type ExpenseCreatedEvent struct {
+	FundID    int64 `json:"fund_id"`
+	CreatorID int64 `json:"creator_id"`
+}
+
+func NewFundUsecase(fr repository.FundRepository, pr repository.PurchaseRepository, ep repository.EventPublisher) *FundUsecase {
+	return &FundUsecase{fundRepository: fr, purchaseRepository: pr, eventPublisher: ep}
 }
 
 func (u *FundUsecase) GetBalance(ctx context.Context, fundID int) (*domain.Settlement, error) {
@@ -102,6 +109,17 @@ func (u *FundUsecase) AddExpense(ctx context.Context, fundID int, id int64, desc
 	}
 
 	err = u.purchaseRepository.CreatePurchase(ctx, fundID, cost, id, desc)
+	if err != nil {
+		return err
+	}
+	event := ExpenseCreatedEvent{CreatorID: id, FundID: int64(fundID)}
+
+	body, err := json.Marshal(event)
+	if err != nil {
+		slog.Error("failed to marshal event", "err", err)
+		return err
+	}
+	err = u.eventPublisher.Publish(ctx, "test", body)
 	if err != nil {
 		return err
 	}

@@ -35,3 +35,8 @@ type RedisRepository interface {
 	GetUserCtx(ctx context.Context, userID *int64) (*domain.UserContext, error)
 	SaveUserCtx(ctx context.Context, userID *int64, value *domain.UserContext) error
 }
+
+type EventPublisher interface {
+	Publish(ctx context.Context, queueName string, body []byte) error
+	Close()
+}

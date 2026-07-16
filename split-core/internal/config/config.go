@@ -15,6 +15,7 @@ type Config struct {
 
 	Postgres PGConfig
 	Redis    RedisConfig
+	RabbitMQ RabbitMQConfig
 }
 
 type PGConfig struct {
@@ -29,6 +30,15 @@ type RedisConfig struct {
 	Host     string `env:"REDIS_HOST" env-required:"true"`
 	Port     string `env:"REDIS_PORT" env-required:"true"`
 	Password string `env:"REDIS_PASS" env-required:"true"`
+}
+
+type RabbitMQConfig struct {
+	User     string `env:"RMQ_USER" env-required:"true"`
+	Password string `env:"RMQ_PASS" env-required:"true"`
+}
+
+func (r RabbitMQConfig) UrlRmq() string {
+	return fmt.Sprintf("amqp://%s:%s@rabbitmq:5672/", r.User, r.Password)
 }
 
 func (p PGConfig) URL() string {

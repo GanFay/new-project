@@ -3,28 +3,22 @@ package main
 import (
 	"context"
 	"log/slog"
-	"net"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/ganfay/split-core/internal/config"
+	"github.com/ganfay/split-core/internal/delivery/grpcDelivery"
 	"github.com/ganfay/split-core/internal/delivery/telegram"
 	"github.com/ganfay/split-core/internal/pkg/logger"
 	"github.com/ganfay/split-core/internal/repository/postgres"
+	"github.com/ganfay/split-core/internal/repository/rabbitmq"
 	"github.com/ganfay/split-core/internal/repository/redisRepository"
 	"github.com/ganfay/split-core/internal/usecase"
-	pb "github.com/ganfay/split-proto"
 	"github.com/redis/go-redis/v9"
-	"google.golang.org/grpc"
-
 	tele "gopkg.in/telebot.v4"
 )
-
-type server struct {
-	pb.UnimplementedPingServer
-}
 
 func main() {
 	ctx := context.Background()
@@ -52,8 +46,14 @@ func main() {
 	fundRepository := postgres.NewFundRepository(pool)
 	purchaseRepository := postgres.NewPurchaseRepository(pool)
 	StateRepository := redisRepository.NewRepository(rdb)
+	publisher, err := rabbitmq.NewPublisher(cfg.RabbitMQ.UrlRmq())
+	if err != nil {
+		slog.Error("Error creating publisher", "err", err)
+		os.Exit(1)
+	}
+	defer publisher.Close()
 
-	fundUC := usecase.NewFundUsecase(fundRepository, purchaseRepository)
+	fundUC := usecase.NewFundUsecase(fundRepository, purchaseRepository, publisher)
 	userUC := usecase.NewUserUsecase(userRepository)
 	stateUC := usecase.NewStateUsecase(StateRepository)
 
@@ -66,10 +66,18 @@ func main() {
 	}
 	h.SetupRegister(b)
 
+	grpcServer := grpcDelivery.NewServer(":50001")
+
+	go func() {
+		if err = grpcServer.Start(); err != nil {
+			slog.Error("gRPC server error", "err", err)
+		}
+	}()
 	go func() {
 		slog.Info("Starting bot", "version", cfg.BotVersion, "env", cfg.Env)
 		b.Start()
 	}()
+	defer grpcServer.Stop()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
@@ -78,27 +86,10 @@ func main() {
 	slog.Info("Stopping application...", "signal", sign.String())
 
 	b.Stop()
-	lis, err := net.Listen("tcp", ":50001")
-	if err != nil {
-		slog.Error("failed to listen port", "err", err)
-		return
-	}
-	s := grpc.NewServer()
-	pb.RegisterPingServer(s, &server{})
-	err = s.Serve(lis)
-	if err != nil {
-		slog.Error("failed to log", "err", err)
-		return
-	}
 	pool.Close()
 	err = rdb.Close()
 	if err != nil {
 		panic("Failed to close the redis database: " + err.Error())
 	}
 	slog.Info("Application stopped gracefully.")
-}
-
-func (s *server) SayPing(_ context.Context, in *pb.PingRequest) (*pb.PingReply, error) {
-	slog.Info("Received: %v", in.GetName())
-	return &pb.PingReply{Message: "Ping " + in.GetName()}, nil
 }

@@ -18,8 +18,8 @@ services:
       retries: 5
   app:
     build:
-      context: ./split-core
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: split-core/Dockerfile
     container_name: split_core_app
     restart: always
     env_file:
@@ -29,11 +29,10 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
-      redis:
-        condition: service_healthy
-
+      rabbitmq:
+        condition: service_started
     volumes:
-      - ${PROJECT_ROOT}/out:/app/out
+      - ${PROJECT_ROOT}/split-core/out:/app/out
     user: "${UID}:${GID}"
     environment:
       TOKEN: ${TOKEN}
@@ -67,11 +66,23 @@ services:
       --requirepass ${REDIS_PASS}
       --appendonly yes
   split-notify:
+    container_name: split_notify
     build:
-      context: ./split-notify
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: split-notify/Dockerfile
     depends_on:
-      - app
+      rabbitmq:
+        condition: service_started
+  rabbitmq:
+    image: rabbitmq:4.3.2-management
+    container_name: split-rabbit
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RMQ_PASS}
 networks:
   default:
     name: split_network

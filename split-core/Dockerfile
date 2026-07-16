@@ -3,10 +3,15 @@ FROM golang:1.26.2-alpine AS builder
 
 WORKDIR /src
 
-COPY go.mod go.sum ./
+COPY proto/ ./proto/
+
+COPY split-core/go.mod split-core/go.sum ./split-core/
+
+WORKDIR /src/split-core
+
 RUN go mod download
 
-COPY .. .
+COPY split-core/ .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /bin/bot ./cmd/bot/main.go
 

@@ -1,28 +1,30 @@
 package main
 
 import (
-	"context"
 	"log"
 	"time"
 
-	pb "github.com/ganfay/split-proto"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"github.com/ganfay/split-notify/internal/client"
+	"github.com/ganfay/split-notify/internal/consumer"
+	"github.com/ganfay/split-notify/internal/processor"
 )
 
 func main() {
-	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	time.Sleep(time.Second * 10)
+	coreClient, err := client.NewCoreClient("app:50001")
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		log.Fatalln("error init coreClient")
+		return
 	}
-	defer conn.Close()
-	c := pb.NewPingClient(conn)
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	ping, err := c.SayPing(ctx, &pb.PingRequest{Name: "default"})
+	defer coreClient.Close()
+
+	proc := processor.NewProcessor(coreClient)
+
+	cons, err := consumer.NewConsumer("amqp://guest:guest@rabbitmq:5672/", "test")
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Fatalf("Consumer error. Error details: %v", err)
+		return
 	}
-	log.Printf("Greeting: %s", ping.GetMessage())
+	defer cons.Close()
+	cons.Start(proc)
 }
