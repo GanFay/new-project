@@ -10,10 +10,10 @@ MIGRATIONS_DIR = split-core/internal/repository/postgres_migrations
 DB_URL = postgresql://${PG_USER}:${PG_PASS}@db:${PG_PORT}/${PG_DB}?sslmode=disable
 
 env-up:
-	@docker compose up -d db redis
+	@docker compose up -d db redis rabbimq
 
 env-down:
-	@docker compose down db redis
+	@docker compose down db redis rabbitmq
 
 env-cleanup:
 	@read -p "Clear all volume files? Risk of data loss. [y/N]: " ans; \
