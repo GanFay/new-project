@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+package notification;
+
+service NotificationService {
+  rpc SayPing (PingRequest) returns (PingReply) {}
+  rpc GetNotificationTargets (GetRequest) returns (TargetsResponse) {}
+  rpc NotificateTarget (NotTarget) returns (NotificateReply) {}
+}
+
+
+message NotTarget {
+  int64 tg_id = 1;
+  string msg = 2;
+}
+
+message PingRequest {
+  string name = 1;
+}
+
+message NotificateReply {
+  bool success = 1;
+}
+
+message PingReply {
+  string message = 1;
+}
+
+message GetRequest {
+  int64 fund_id = 1;
+  int64 creator_iid = 2;
+}
+
+message TargetsResponse {
+  repeated Target targets = 1;
+  string fund_name = 2;
+  string creator_name = 3;
+}
+
+message Target {
+  string first_name = 1;
+  int64 iid = 2;
+  int64 tg_id = 3;
+}

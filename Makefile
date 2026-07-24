@@ -1,18 +1,19 @@
-include .env
+include split-core/.env
 export
 
 export PROJECT_ROOT=$(shell pwd)
 
 export UID=$(shell id -u)
 export GID=$(shell id -g)
-MIGRATIONS_DIR = internal/repository/postgres_migrations
+
+MIGRATIONS_DIR = split-core/internal/repository/postgres_migrations
 DB_URL = postgresql://${PG_USER}:${PG_PASS}@db:${PG_PORT}/${PG_DB}?sslmode=disable
 
 env-up:
-	@docker compose up -d db redis
+	@docker compose up -d db redis rabbitmq
 
 env-down:
-	@docker compose down db redis
+	@docker compose down db redis rabbitmq
 
 env-cleanup:
 	@read -p "Clear all volume files? Risk of data loss. [y/N]: " ans; \
@@ -57,14 +58,17 @@ logs:
   	fi; \
 	docker logs --tail=100 $(name)
 
-lint:
-	@golangci-lint run
+lint-app:
+	@cd split-core && golangci-lint run
 
-build:
-	@go build -o ./bin/bot ./cmd/bot/main.go
+lint-notify:
+	@cd split-notify && golangci-lint run
+
+proto-generate:
+	@cd proto && protoc --go_out=. --go-grpc_out=. notification.proto
 
 run-services:
-	@mkdir -p "out/logs"
+	@mkdir -p "split-core/out/logs"
 	@docker compose up -d --build
 
 dev-rerun:
@@ -72,3 +76,6 @@ dev-rerun:
 	@make env-up
 	sleep 2
 	@make migrate-up
+
+run-notify:
+	@docker compose up -d --build split-notify
