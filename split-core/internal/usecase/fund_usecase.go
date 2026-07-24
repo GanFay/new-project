@@ -18,8 +18,9 @@ type FundUsecase struct {
 }
 
 type ExpenseCreatedEvent struct {
-	FundID    int64 `json:"fund_id"`
-	CreatorID int64 `json:"creator_id"`
+	FundID    int64   `json:"fund_id"`
+	CreatorID int64   `json:"creator_id"`
+	Amount    float64 `json:"amount"`
 }
 
 func NewFundUsecase(fr repository.FundRepository, pr repository.PurchaseRepository, ep repository.EventPublisher) *FundUsecase {
@@ -112,7 +113,11 @@ func (u *FundUsecase) AddExpense(ctx context.Context, fundID int, id int64, desc
 	if err != nil {
 		return err
 	}
-	event := ExpenseCreatedEvent{CreatorID: id, FundID: int64(fundID)}
+	event := ExpenseCreatedEvent{
+		CreatorID: id,
+		FundID:    int64(fundID),
+		Amount:    cost,
+	}
 
 	body, err := json.Marshal(event)
 	if err != nil {

@@ -260,6 +260,8 @@ func (x *GetRequest) GetCreatorIid() int64 {
 type TargetsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Targets       []*Target              `protobuf:"bytes,1,rep,name=targets,proto3" json:"targets,omitempty"`
+	FundName      string                 `protobuf:"bytes,2,opt,name=fund_name,json=fundName,proto3" json:"fund_name,omitempty"`
+	CreatorName   string                 `protobuf:"bytes,3,opt,name=creator_name,json=creatorName,proto3" json:"creator_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -299,6 +301,20 @@ func (x *TargetsResponse) GetTargets() []*Target {
 		return x.Targets
 	}
 	return nil
+}
+
+func (x *TargetsResponse) GetFundName() string {
+	if x != nil {
+		return x.FundName
+	}
+	return ""
+}
+
+func (x *TargetsResponse) GetCreatorName() string {
+	if x != nil {
+		return x.CreatorName
+	}
+	return ""
 }
 
 type Target struct {
@@ -379,9 +395,11 @@ const file_notification_proto_rawDesc = "" +
 	"GetRequest\x12\x17\n" +
 	"\afund_id\x18\x01 \x01(\x03R\x06fundId\x12\x1f\n" +
 	"\vcreator_iid\x18\x02 \x01(\x03R\n" +
-	"creatorIid\"A\n" +
+	"creatorIid\"\x81\x01\n" +
 	"\x0fTargetsResponse\x12.\n" +
-	"\atargets\x18\x01 \x03(\v2\x14.notification.TargetR\atargets\"N\n" +
+	"\atargets\x18\x01 \x03(\v2\x14.notification.TargetR\atargets\x12\x1b\n" +
+	"\tfund_name\x18\x02 \x01(\tR\bfundName\x12!\n" +
+	"\fcreator_name\x18\x03 \x01(\tR\vcreatorName\"N\n" +
 	"\x06Target\x12\x1d\n" +
 	"\n" +
 	"first_name\x18\x01 \x01(\tR\tfirstName\x12\x10\n" +

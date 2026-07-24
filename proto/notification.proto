@@ -35,6 +35,8 @@ message GetRequest {
 
 message TargetsResponse {
   repeated Target targets = 1;
+  string fund_name = 2;
+  string creator_name = 3;
 }
 
 message Target {

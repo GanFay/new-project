@@ -13,8 +13,9 @@ type Processor struct {
 }
 
 type ExpenseCreatedEvent struct {
-	FundID    int64 `json:"fund_id"`
-	CreatorID int64 `json:"creator_id"`
+	FundID    int64   `json:"fund_id"`
+	CreatorID int64   `json:"creator_id"`
+	Amount    float64 `json:"amount"`
 }
 
 func NewProcessor(grpcClient *client.CoreClient) *Processor {
@@ -43,12 +44,13 @@ func (p *Processor) HandleMessage(ctx context.Context, body []byte, Type string)
 }
 
 func (p *Processor) NotifyTargets(ctx context.Context, event ExpenseCreatedEvent) error {
-	targets, err := p.grpcClient.GetTargets(ctx, event.FundID, event.CreatorID)
+	resp, err := p.grpcClient.GetTargets(ctx, event.FundID, event.CreatorID)
 	if err != nil {
 		return err
 	}
-	log.Printf("Processor: targets test: %v", targets)
-	err = p.grpcClient.NotificateTargets(ctx, targets)
+	log.Printf("Processor: response here: %v", resp)
+
+	err = p.grpcClient.NotificateTargets(ctx, resp.GetTargets(), event.Amount, resp.GetCreatorName(), resp.GetFundName())
 	if err != nil {
 		return err
 	}
