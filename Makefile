@@ -58,8 +58,11 @@ logs:
   	fi; \
 	docker logs --tail=100 $(name)
 
-lint:
+lint-app:
 	@cd split-core && golangci-lint run
+
+lint-notify:
+	@cd split-notify && golangci-lint run
 
 proto-generate:
 	@cd proto && protoc --go_out=. --go-grpc_out=. notification.proto

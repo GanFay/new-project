@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"log/slog"
 
 	"github.com/ganfay/split-notify/internal/client"
 	"github.com/ganfay/split-notify/internal/config"
@@ -18,7 +19,12 @@ func main() {
 		log.Fatalln("Main: Error init coreClient")
 		return
 	}
-	defer coreClient.Close()
+	defer func(coreClient *client.CoreClient) {
+		err = coreClient.Close()
+		if err != nil {
+			slog.Error("failed to close core client", "err", err)
+		}
+	}(coreClient)
 
 	proc := processor.NewProcessor(coreClient)
 

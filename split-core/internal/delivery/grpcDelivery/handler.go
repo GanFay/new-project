@@ -21,7 +21,6 @@ func NewHandler(fundUC usecase.FundUsecase, b *tele.Bot) *Handler {
 }
 
 func (h *Handler) SayPing(_ context.Context, in *pb.PingRequest) (*pb.PingReply, error) {
-	slog.Info("Received: %v", in.GetName())
 	return &pb.PingReply{Message: "Ping " + in.GetName()}, nil
 }
 
@@ -31,7 +30,7 @@ func (h *Handler) GetNotificationTargets(ctx context.Context, in *pb.GetRequest)
 	reqFund := &domain.Fund{
 		ID: int(fundID),
 	}
-	slog.Info("Received: fund_id: ", fundID, "creator_id:", creatorIID)
+	slog.Info("Received:", "fund_id: ", fundID, "creator_id:", creatorIID)
 	info, err := h.fundUC.GetInfo(ctx, reqFund)
 	if err != nil {
 		return nil, err

@@ -3,6 +3,7 @@ package consumer
 import (
 	"context"
 	"log"
+	"log/slog"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -24,7 +25,12 @@ func NewConsumer(url string, queueName string) (*Consumer, error) {
 	}
 	ch, err := dial.Channel()
 	if err != nil {
-		defer dial.Close()
+		defer func(dial *amqp.Connection) {
+			err = dial.Close()
+			if err != nil {
+				slog.Error("failed to close RabbitMQ connection", "err", err)
+			}
+		}(dial)
 		return nil, err
 	}
 	q, err := ch.QueueDeclare(
@@ -38,8 +44,14 @@ func NewConsumer(url string, queueName string) (*Consumer, error) {
 		},
 	)
 	if err != nil {
-		ch.Close()
-		dial.Close()
+		err = ch.Close()
+		if err != nil {
+			return nil, err
+		}
+		err = dial.Close()
+		if err != nil {
+			return nil, err
+		}
 		return nil, err
 	}
 	return &Consumer{conn: dial, ch: ch, q: q}, nil
@@ -47,10 +59,16 @@ func NewConsumer(url string, queueName string) (*Consumer, error) {
 
 func (c *Consumer) Close() {
 	if c.ch != nil {
-		c.ch.Close()
+		err := c.ch.Close()
+		if err != nil {
+			return
+		}
 	}
 	if c.conn != nil {
-		c.conn.Close()
+		err := c.conn.Close()
+		if err != nil {
+			return
+		}
 	}
 }
 
