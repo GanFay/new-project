@@ -32,5 +32,11 @@ jobs:
           version: latest
           working-directory: ./split-notify
 
-      - name: Run All Tests
+      - name: Run Tests (split-core)
+        working-directory: ./split-core
         run: go test -v ./...
+
+
+    # - name: Run Tests (split-notify)
+    #   working-directory: ./split-notify
+    #   run: go test -v ./...
