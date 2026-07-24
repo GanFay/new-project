@@ -6,6 +6,7 @@ import (
 	"github.com/ganfay/split-core/internal/usecase"
 	pb "github.com/ganfay/split-proto/pb"
 	"google.golang.org/grpc"
+	tele "gopkg.in/telebot.v4"
 )
 
 type Server struct {
@@ -13,9 +14,9 @@ type Server struct {
 	grpcServer *grpc.Server
 }
 
-func NewServer(addr string, fundUC usecase.FundUsecase) *Server {
+func NewServer(addr string, fundUC usecase.FundUsecase, b *tele.Bot) *Server {
 	s := grpc.NewServer()
-	pb.RegisterNotificationServiceServer(s, NewHandler(fundUC))
+	pb.RegisterNotificationServiceServer(s, NewHandler(fundUC, b))
 	return &Server{addr: addr, grpcServer: s}
 }
 

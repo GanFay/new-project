@@ -21,6 +21,58 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type NotTarget struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TgId          int64                  `protobuf:"varint,1,opt,name=tg_id,json=tgId,proto3" json:"tg_id,omitempty"`
+	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NotTarget) Reset() {
+	*x = NotTarget{}
+	mi := &file_notification_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NotTarget) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NotTarget) ProtoMessage() {}
+
+func (x *NotTarget) ProtoReflect() protoreflect.Message {
+	mi := &file_notification_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NotTarget.ProtoReflect.Descriptor instead.
+func (*NotTarget) Descriptor() ([]byte, []int) {
+	return file_notification_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *NotTarget) GetTgId() int64 {
+	if x != nil {
+		return x.TgId
+	}
+	return 0
+}
+
+func (x *NotTarget) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
 type PingRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -30,7 +82,7 @@ type PingRequest struct {
 
 func (x *PingRequest) Reset() {
 	*x = PingRequest{}
-	mi := &file_notification_proto_msgTypes[0]
+	mi := &file_notification_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +94,7 @@ func (x *PingRequest) String() string {
 func (*PingRequest) ProtoMessage() {}
 
 func (x *PingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_notification_proto_msgTypes[0]
+	mi := &file_notification_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +107,7 @@ func (x *PingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
 func (*PingRequest) Descriptor() ([]byte, []int) {
-	return file_notification_proto_rawDescGZIP(), []int{0}
+	return file_notification_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PingRequest) GetName() string {
@@ -63,6 +115,50 @@ func (x *PingRequest) GetName() string {
 		return x.Name
 	}
 	return ""
+}
+
+type NotificateReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NotificateReply) Reset() {
+	*x = NotificateReply{}
+	mi := &file_notification_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NotificateReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NotificateReply) ProtoMessage() {}
+
+func (x *NotificateReply) ProtoReflect() protoreflect.Message {
+	mi := &file_notification_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NotificateReply.ProtoReflect.Descriptor instead.
+func (*NotificateReply) Descriptor() ([]byte, []int) {
+	return file_notification_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *NotificateReply) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
 }
 
 type PingReply struct {
@@ -74,7 +170,7 @@ type PingReply struct {
 
 func (x *PingReply) Reset() {
 	*x = PingReply{}
-	mi := &file_notification_proto_msgTypes[1]
+	mi := &file_notification_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -86,7 +182,7 @@ func (x *PingReply) String() string {
 func (*PingReply) ProtoMessage() {}
 
 func (x *PingReply) ProtoReflect() protoreflect.Message {
-	mi := &file_notification_proto_msgTypes[1]
+	mi := &file_notification_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -99,7 +195,7 @@ func (x *PingReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingReply.ProtoReflect.Descriptor instead.
 func (*PingReply) Descriptor() ([]byte, []int) {
-	return file_notification_proto_rawDescGZIP(), []int{1}
+	return file_notification_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *PingReply) GetMessage() string {
@@ -119,7 +215,7 @@ type GetRequest struct {
 
 func (x *GetRequest) Reset() {
 	*x = GetRequest{}
-	mi := &file_notification_proto_msgTypes[2]
+	mi := &file_notification_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -131,7 +227,7 @@ func (x *GetRequest) String() string {
 func (*GetRequest) ProtoMessage() {}
 
 func (x *GetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_notification_proto_msgTypes[2]
+	mi := &file_notification_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -144,7 +240,7 @@ func (x *GetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRequest.ProtoReflect.Descriptor instead.
 func (*GetRequest) Descriptor() ([]byte, []int) {
-	return file_notification_proto_rawDescGZIP(), []int{2}
+	return file_notification_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetRequest) GetFundId() int64 {
@@ -170,7 +266,7 @@ type TargetsResponse struct {
 
 func (x *TargetsResponse) Reset() {
 	*x = TargetsResponse{}
-	mi := &file_notification_proto_msgTypes[3]
+	mi := &file_notification_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -182,7 +278,7 @@ func (x *TargetsResponse) String() string {
 func (*TargetsResponse) ProtoMessage() {}
 
 func (x *TargetsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_notification_proto_msgTypes[3]
+	mi := &file_notification_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -195,7 +291,7 @@ func (x *TargetsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TargetsResponse.ProtoReflect.Descriptor instead.
 func (*TargetsResponse) Descriptor() ([]byte, []int) {
-	return file_notification_proto_rawDescGZIP(), []int{3}
+	return file_notification_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *TargetsResponse) GetTargets() []*Target {
@@ -216,7 +312,7 @@ type Target struct {
 
 func (x *Target) Reset() {
 	*x = Target{}
-	mi := &file_notification_proto_msgTypes[4]
+	mi := &file_notification_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -228,7 +324,7 @@ func (x *Target) String() string {
 func (*Target) ProtoMessage() {}
 
 func (x *Target) ProtoReflect() protoreflect.Message {
-	mi := &file_notification_proto_msgTypes[4]
+	mi := &file_notification_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -241,7 +337,7 @@ func (x *Target) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Target.ProtoReflect.Descriptor instead.
 func (*Target) Descriptor() ([]byte, []int) {
-	return file_notification_proto_rawDescGZIP(), []int{4}
+	return file_notification_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *Target) GetFirstName() string {
@@ -269,9 +365,14 @@ var File_notification_proto protoreflect.FileDescriptor
 
 const file_notification_proto_rawDesc = "" +
 	"\n" +
-	"\x12notification.proto\x12\fnotification\"!\n" +
+	"\x12notification.proto\x12\fnotification\"2\n" +
+	"\tNotTarget\x12\x13\n" +
+	"\x05tg_id\x18\x01 \x01(\x03R\x04tgId\x12\x10\n" +
+	"\x03msg\x18\x02 \x01(\tR\x03msg\"!\n" +
 	"\vPingRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"%\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"+\n" +
+	"\x0fNotificateReply\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"%\n" +
 	"\tPingReply\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"F\n" +
 	"\n" +
@@ -285,10 +386,11 @@ const file_notification_proto_rawDesc = "" +
 	"\n" +
 	"first_name\x18\x01 \x01(\tR\tfirstName\x12\x10\n" +
 	"\x03iid\x18\x02 \x01(\x03R\x03iid\x12\x13\n" +
-	"\x05tg_id\x18\x03 \x01(\x03R\x04tgId2\xab\x01\n" +
+	"\x05tg_id\x18\x03 \x01(\x03R\x04tgId2\xf9\x01\n" +
 	"\x13NotificationService\x12?\n" +
 	"\aSayPing\x12\x19.notification.PingRequest\x1a\x17.notification.PingReply\"\x00\x12S\n" +
-	"\x16GetNotificationTargets\x12\x18.notification.GetRequest\x1a\x1d.notification.TargetsResponse\"\x00B\x06Z\x04./pbb\x06proto3"
+	"\x16GetNotificationTargets\x12\x18.notification.GetRequest\x1a\x1d.notification.TargetsResponse\"\x00\x12L\n" +
+	"\x10NotificateTarget\x12\x17.notification.NotTarget\x1a\x1d.notification.NotificateReply\"\x00B\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_notification_proto_rawDescOnce sync.Once
@@ -302,22 +404,26 @@ func file_notification_proto_rawDescGZIP() []byte {
 	return file_notification_proto_rawDescData
 }
 
-var file_notification_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_notification_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_notification_proto_goTypes = []any{
-	(*PingRequest)(nil),     // 0: notification.PingRequest
-	(*PingReply)(nil),       // 1: notification.PingReply
-	(*GetRequest)(nil),      // 2: notification.GetRequest
-	(*TargetsResponse)(nil), // 3: notification.TargetsResponse
-	(*Target)(nil),          // 4: notification.Target
+	(*NotTarget)(nil),       // 0: notification.NotTarget
+	(*PingRequest)(nil),     // 1: notification.PingRequest
+	(*NotificateReply)(nil), // 2: notification.NotificateReply
+	(*PingReply)(nil),       // 3: notification.PingReply
+	(*GetRequest)(nil),      // 4: notification.GetRequest
+	(*TargetsResponse)(nil), // 5: notification.TargetsResponse
+	(*Target)(nil),          // 6: notification.Target
 }
 var file_notification_proto_depIdxs = []int32{
-	4, // 0: notification.TargetsResponse.targets:type_name -> notification.Target
-	0, // 1: notification.NotificationService.SayPing:input_type -> notification.PingRequest
-	2, // 2: notification.NotificationService.GetNotificationTargets:input_type -> notification.GetRequest
-	1, // 3: notification.NotificationService.SayPing:output_type -> notification.PingReply
-	3, // 4: notification.NotificationService.GetNotificationTargets:output_type -> notification.TargetsResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
+	6, // 0: notification.TargetsResponse.targets:type_name -> notification.Target
+	1, // 1: notification.NotificationService.SayPing:input_type -> notification.PingRequest
+	4, // 2: notification.NotificationService.GetNotificationTargets:input_type -> notification.GetRequest
+	0, // 3: notification.NotificationService.NotificateTarget:input_type -> notification.NotTarget
+	3, // 4: notification.NotificationService.SayPing:output_type -> notification.PingReply
+	5, // 5: notification.NotificationService.GetNotificationTargets:output_type -> notification.TargetsResponse
+	2, // 6: notification.NotificationService.NotificateTarget:output_type -> notification.NotificateReply
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -334,7 +440,7 @@ func file_notification_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_notification_proto_rawDesc), len(file_notification_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

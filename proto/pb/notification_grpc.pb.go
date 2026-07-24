@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	NotificationService_SayPing_FullMethodName                = "/notification.NotificationService/SayPing"
 	NotificationService_GetNotificationTargets_FullMethodName = "/notification.NotificationService/GetNotificationTargets"
+	NotificationService_NotificateTarget_FullMethodName       = "/notification.NotificationService/NotificateTarget"
 )
 
 // NotificationServiceClient is the client API for NotificationService service.
@@ -29,6 +30,7 @@ const (
 type NotificationServiceClient interface {
 	SayPing(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingReply, error)
 	GetNotificationTargets(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*TargetsResponse, error)
+	NotificateTarget(ctx context.Context, in *NotTarget, opts ...grpc.CallOption) (*NotificateReply, error)
 }
 
 type notificationServiceClient struct {
@@ -59,12 +61,23 @@ func (c *notificationServiceClient) GetNotificationTargets(ctx context.Context, 
 	return out, nil
 }
 
+func (c *notificationServiceClient) NotificateTarget(ctx context.Context, in *NotTarget, opts ...grpc.CallOption) (*NotificateReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NotificateReply)
+	err := c.cc.Invoke(ctx, NotificationService_NotificateTarget_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotificationServiceServer is the server API for NotificationService service.
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility.
 type NotificationServiceServer interface {
 	SayPing(context.Context, *PingRequest) (*PingReply, error)
 	GetNotificationTargets(context.Context, *GetRequest) (*TargetsResponse, error)
+	NotificateTarget(context.Context, *NotTarget) (*NotificateReply, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedNotificationServiceServer) SayPing(context.Context, *PingRequ
 }
 func (UnimplementedNotificationServiceServer) GetNotificationTargets(context.Context, *GetRequest) (*TargetsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetNotificationTargets not implemented")
+}
+func (UnimplementedNotificationServiceServer) NotificateTarget(context.Context, *NotTarget) (*NotificateReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method NotificateTarget not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 func (UnimplementedNotificationServiceServer) testEmbeddedByValue()                             {}
@@ -138,6 +154,24 @@ func _NotificationService_GetNotificationTargets_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationService_NotificateTarget_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotTarget)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).NotificateTarget(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NotificationService_NotificateTarget_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).NotificateTarget(ctx, req.(*NotTarget))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotificationService_ServiceDesc is the grpc.ServiceDesc for NotificationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetNotificationTargets",
 			Handler:    _NotificationService_GetNotificationTargets_Handler,
+		},
+		{
+			MethodName: "NotificateTarget",
+			Handler:    _NotificationService_NotificateTarget_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

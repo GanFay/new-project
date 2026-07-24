@@ -48,5 +48,10 @@ func (p *Processor) NotifyTargets(ctx context.Context, event ExpenseCreatedEvent
 		return err
 	}
 	log.Printf("Processor: targets test: %v", targets)
+	err = p.grpcClient.NotificateTargets(ctx, targets)
+	if err != nil {
+		return err
+	}
+	log.Printf("Processor: completely notified targets")
 	return err
 }

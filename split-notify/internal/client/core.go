@@ -42,6 +42,17 @@ func (c *CoreClient) Ping(ctx context.Context, name string) (*pb.PingReply, erro
 	return ping, err
 }
 
+func (c *CoreClient) NotificateTargets(ctx context.Context, targets []*pb.Target) error {
+	for _, t := range targets {
+		text := fmt.Sprintf("Hello, %s! *someone add new expense in *someone fund.", t.FirstName) //надо крейтор нейм добавтиь и фанд нейм
+		_, err := c.client.NotificateTarget(ctx, &pb.NotTarget{Msg: text, TgId: t.TgId})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (c *CoreClient) Close() error {
 	return c.conn.Close()
 }

@@ -7,10 +7,21 @@ package notification;
 service NotificationService {
   rpc SayPing (PingRequest) returns (PingReply) {}
   rpc GetNotificationTargets (GetRequest) returns (TargetsResponse) {}
+  rpc NotificateTarget (NotTarget) returns (NotificateReply) {}
+}
+
+
+message NotTarget {
+  int64 tg_id = 1;
+  string msg = 2;
 }
 
 message PingRequest {
   string name = 1;
+}
+
+message NotificateReply {
+  bool success = 1;
 }
 
 message PingReply {

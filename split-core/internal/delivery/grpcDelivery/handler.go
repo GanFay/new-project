@@ -6,15 +6,17 @@ import (
 
 	"github.com/ganfay/split-core/internal/usecase"
 	pb "github.com/ganfay/split-proto/pb"
+	tele "gopkg.in/telebot.v4"
 )
 
 type Handler struct {
 	pb.UnimplementedNotificationServiceServer
 	fundUC usecase.FundUsecase
+	bot    *tele.Bot
 }
 
-func NewHandler(fundUC usecase.FundUsecase) *Handler {
-	return &Handler{fundUC: fundUC}
+func NewHandler(fundUC usecase.FundUsecase, b *tele.Bot) *Handler {
+	return &Handler{fundUC: fundUC, bot: b}
 }
 
 func (h *Handler) SayPing(_ context.Context, in *pb.PingRequest) (*pb.PingReply, error) {
@@ -51,4 +53,15 @@ func (h *Handler) GetNotificationTargets(ctx context.Context, in *pb.GetRequest)
 		targets = append(targets, target)
 	}
 	return &pb.TargetsResponse{Targets: targets}, err
+}
+
+func (h *Handler) NotificateTarget(_ context.Context, in *pb.NotTarget) (*pb.NotificateReply, error) {
+	var msg string
+	var tgID int64
+	if in != nil {
+		msg = in.GetMsg()
+		tgID = in.GetTgId()
+	}
+	_, err := h.bot.Send(&tele.User{ID: tgID}, msg)
+	return nil, err
 }

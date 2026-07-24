@@ -12,6 +12,7 @@ type Config struct {
 	BotVersion string `env:"BOT_VER" env-default:"1.0.0"`
 	BotToken   string `env:"TOKEN" env-required:"true"`
 	Env        string `env:"ENV" env-required:"true"`
+	GRpcPort string `env:"GRPC_PORT" env-required:"true"`
 
 	Postgres PGConfig
 	Redis    RedisConfig
