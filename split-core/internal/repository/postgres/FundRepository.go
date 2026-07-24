@@ -122,7 +122,7 @@ func (r *FundRepository) IsMember(ctx context.Context, fundID int, userID int64)
 func (r *FundRepository) GetMembers(ctx context.Context, fundID int) ([]domain.User, error) {
 	var users []domain.User
 
-	query := `SELECT f.user_id, COALESCE(u.tg_id, -1), COALESCE(u.username, ''), first_name 
+	query := `SELECT f.user_id, COALESCE(u.tg_id, -1), COALESCE(u.username, ''), first_name, is_virtual, created_at
 				FROM app.fund_members f
 				JOIN app.users u ON f.user_id = u.id
 				WHERE fund_id = $1`
@@ -134,7 +134,8 @@ func (r *FundRepository) GetMembers(ctx context.Context, fundID int) ([]domain.U
 	defer rows.Close()
 	for rows.Next() {
 		var user domain.User
-		err = rows.Scan(&user.ID, &user.TgID, &user.Username, &user.FirstName)
+		user.TgID = new(int64)
+		err = rows.Scan(&user.ID, user.TgID, &user.Username, &user.FirstName, &user.IsVirtual, &user.CreatedAt)
 		if err != nil {
 			return nil, err
 		}

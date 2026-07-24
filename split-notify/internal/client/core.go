@@ -3,8 +3,8 @@ package client
 import (
 	"context"
 	"fmt"
+	"log"
 
-	"github.com/ganfay/split-notify/internal/processor"
 	pb "github.com/ganfay/split-proto/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -18,7 +18,7 @@ type CoreClient struct {
 func NewCoreClient(target string) (*CoreClient, error) {
 	conn, err := grpc.NewClient(target, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to gRPC server: %w", err)
+		return nil, fmt.Errorf("client: failed to connect to gRPC server: %w", err)
 	}
 
 	cl := pb.NewNotificationServiceClient(conn)
@@ -26,13 +26,15 @@ func NewCoreClient(target string) (*CoreClient, error) {
 	return &CoreClient{client: cl, conn: conn}, nil
 }
 
-func (c *CoreClient) GetTargets(ctx context.Context, request processor.ExpenseCreatedEvent) {
-	targets, err := c.client.GetNotificationTargets(ctx, &pb.GetRequest{FundId: request.FundID, CreatorIid: request.CreatorID})
+func (c *CoreClient) GetTargets(ctx context.Context, fundID int64, creatorID int64) ([]*pb.Target, error) {
+	targets, err := c.client.GetNotificationTargets(ctx, &pb.GetRequest{FundId: fundID, CreatorIid: creatorID})
 	if err != nil {
-		return
+		return nil, err
 	}
+	log.Printf("Core: Get targets successfully on gRPC connection")
 	listTargets := targets.GetTargets()
-
+	log.Printf("Core: Targets: %v", listTargets)
+	return listTargets, err
 }
 
 func (c *CoreClient) Ping(ctx context.Context, name string) (*pb.PingReply, error) {

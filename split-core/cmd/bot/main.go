@@ -66,7 +66,7 @@ func main() {
 	}
 	h.SetupRegister(b)
 
-	grpcServer := grpcDelivery.NewServer(":50001")
+	grpcServer := grpcDelivery.NewServer(":50001", *fundUC)
 
 	go func() {
 		if err = grpcServer.Start(); err != nil {

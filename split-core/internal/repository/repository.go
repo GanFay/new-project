@@ -37,6 +37,6 @@ type RedisRepository interface {
 }
 
 type EventPublisher interface {
-	Publish(ctx context.Context, queueName string, body []byte) error
+	Publish(ctx context.Context, queueName string, body []byte, eventType string) error
 	Close()
 }

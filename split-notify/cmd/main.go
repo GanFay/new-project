@@ -13,7 +13,7 @@ func main() {
 	time.Sleep(time.Second * 10)
 	coreClient, err := client.NewCoreClient("app:50001")
 	if err != nil {
-		log.Fatalln("error init coreClient")
+		log.Fatalln("Main: Error init coreClient")
 		return
 	}
 	defer coreClient.Close()
@@ -22,7 +22,7 @@ func main() {
 
 	cons, err := consumer.NewConsumer("amqp://guest:guest@rabbitmq:5672/", "test")
 	if err != nil {
-		log.Fatalf("Consumer error. Error details: %v", err)
+		log.Fatalf("Main: Consumer error. Error details: %v", err)
 		return
 	}
 	defer cons.Close()

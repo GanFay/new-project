@@ -119,7 +119,7 @@ func (u *FundUsecase) AddExpense(ctx context.Context, fundID int, id int64, desc
 		slog.Error("failed to marshal event", "err", err)
 		return err
 	}
-	err = u.eventPublisher.Publish(ctx, "test", body)
+	err = u.eventPublisher.Publish(ctx, "test", body, "expense_created")
 	if err != nil {
 		return err
 	}

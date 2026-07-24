@@ -26,7 +26,7 @@ func NewPublisher(url string) (*Publisher, error) {
 	return &Publisher{conn: dial, ch: ch}, nil
 }
 
-func (p *Publisher) Publish(ctx context.Context, queueName string, body []byte) error {
+func (p *Publisher) Publish(ctx context.Context, queueName string, body []byte, eventType string) error {
 	q, err := p.ch.QueueDeclare(
 		queueName, // name
 		true,      // durability
@@ -48,6 +48,7 @@ func (p *Publisher) Publish(ctx context.Context, queueName string, body []byte) 
 		false,  // immediate
 		amqp.Publishing{
 			ContentType: "application/json",
+			Type:        eventType,
 			Body:        body,
 		})
 	if err != nil {

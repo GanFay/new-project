@@ -21,15 +21,32 @@ func NewProcessor(grpcClient *client.CoreClient) *Processor {
 	return &Processor{grpcClient: grpcClient}
 }
 
-func (p *Processor) HandleMessage(ctx context.Context, body []byte) error {
-	log.Printf("Processor: starting handle event... %s", body)
+func (p *Processor) HandleMessage(ctx context.Context, body []byte, Type string) error {
+	log.Printf("Processor: Starting handle event... %s", body)
+	var baseEvent ExpenseCreatedEvent
 
-	var event ExpenseCreatedEvent
-
-	err := json.Unmarshal(body, &event)
+	err := json.Unmarshal(body, &baseEvent)
 	if err != nil {
 		return err
 	}
-	log.Printf("Processor: Get event! Fund ID: %d, Creator ID: %d", event.FundID, event.CreatorID)
+	log.Printf("Processor: Get event! %v, Type: %s", baseEvent, Type)
+
+	switch Type {
+	case "expense_created":
+		err = p.NotifyTargets(ctx, baseEvent)
+		if err != nil {
+			log.Printf("Processor: Error in gRPC: %v", err)
+			return err
+		}
+	}
 	return nil
+}
+
+func (p *Processor) NotifyTargets(ctx context.Context, event ExpenseCreatedEvent) error {
+	targets, err := p.grpcClient.GetTargets(ctx, event.FundID, event.CreatorID)
+	if err != nil {
+		return err
+	}
+	log.Printf("Processor: targets test: %v", targets)
+	return err
 }

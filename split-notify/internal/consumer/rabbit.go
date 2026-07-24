@@ -8,7 +8,7 @@ import (
 )
 
 type MsgHandler interface {
-	HandleMessage(ctx context.Context, body []byte) error
+	HandleMessage(ctx context.Context, body []byte, Type string) error
 }
 
 type Consumer struct {
@@ -73,7 +73,7 @@ func (c *Consumer) Start(handler MsgHandler) {
 	go func() {
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
-			err := handler.HandleMessage(context.Background(), d.Body)
+			err := handler.HandleMessage(context.Background(), d.Body, d.Type)
 			if err != nil {
 				log.Printf("Error handling message: %v", err)
 			}

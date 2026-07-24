@@ -3,6 +3,7 @@ package grpcDelivery
 import (
 	"net"
 
+	"github.com/ganfay/split-core/internal/usecase"
 	pb "github.com/ganfay/split-proto/pb"
 	"google.golang.org/grpc"
 )
@@ -12,9 +13,9 @@ type Server struct {
 	grpcServer *grpc.Server
 }
 
-func NewServer(addr string) *Server {
+func NewServer(addr string, fundUC usecase.FundUsecase) *Server {
 	s := grpc.NewServer()
-	pb.RegisterNotificationServiceServer(s, NewHandler())
+	pb.RegisterNotificationServiceServer(s, NewHandler(fundUC))
 	return &Server{addr: addr, grpcServer: s}
 }
 
