@@ -26,7 +26,7 @@ func (r RabbitMQConfig) UrlRmq() string {
 func LoadConfig() *Config {
 	var cfg Config
 
-	err := cleanenv.ReadConfig("../../../split-core/.env", &cfg)
+	err := cleanenv.ReadConfig(".env", &cfg)
 	if err != nil {
 		slog.Info(".env file not found, reading from system env variables")
 		if errEnv := cleanenv.ReadEnv(&cfg); errEnv != nil {

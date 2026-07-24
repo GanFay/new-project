@@ -41,11 +41,15 @@ services:
       PG_USER: ${PG_USER}
       PG_PASS: ${PG_PASS}
       PG_DB: ${PG_DB}
-      REDIS_HOST: redis
+
       PG_HOST: db
-      PG_PORT: 5432
-      REDIS_PORT: 6379
-      RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672/"
+      REDIS_HOST: redis
+
+      PG_PORT: ${PG_PORT}
+      REDIS_PORT: ${REDIS_PORT}
+      RMQ_PASS: ${RMQ_PASS}
+      RMQ_USER: ${RMQ_USER}
+      GRPC_PORT: ${GRPC_PORT}
   migrate:
     image: migrate/migrate:v4.19.1
     user: "${UID}:${GID}"
@@ -73,6 +77,10 @@ services:
     depends_on:
       rabbitmq:
         condition: service_started
+    environment:
+      GRPC_PORT: ${GRPC_PORT}
+      RMQ_PASS: ${RMQ_PASS}
+      RMQ_USER: ${RMQ_USER}
   rabbitmq:
     image: rabbitmq:4.3.2-management
     container_name: split-rabbit

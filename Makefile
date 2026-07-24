@@ -10,7 +10,7 @@ MIGRATIONS_DIR = split-core/internal/repository/postgres_migrations
 DB_URL = postgresql://${PG_USER}:${PG_PASS}@db:${PG_PORT}/${PG_DB}?sslmode=disable
 
 env-up:
-	@docker compose up -d db redis rabbimq
+	@docker compose up -d db redis rabbitmq
 
 env-down:
 	@docker compose down db redis rabbitmq

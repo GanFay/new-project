@@ -85,7 +85,7 @@ func (h *BotHandler) MenuViewFundLogs(offset int, p []domain.Purchase) *tele.Rep
 	if offset > 0 {
 		row = append(row, btnPrev)
 	}
-	if len(p)-offset > limit {
+	if len(p)-offset >= limit {
 		row = append(row, btnNext)
 	}
 	if len(row) != 0 {

@@ -243,7 +243,7 @@ func (h *BotHandler) HandleHistory(c tele.Context) error {
 		sb.WriteString("<i>No expenses yet.</i>")
 	} else {
 		for i, p := range purchases {
-			sb.WriteString("───\n")
+			sb.WriteString("────────────────────────────────────\n")
 			fmt.Fprintf(&sb, "💰 <b>№%d • %.2f </b>\n", i, p.Amount)
 			fmt.Fprintf(&sb, "👤 Paid by: %s\n", p.Payer.GetDisplayName())
 			fmt.Fprintf(&sb, "📝 For: %s\n", p.Description)

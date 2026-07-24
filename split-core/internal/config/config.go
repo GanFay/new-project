@@ -53,7 +53,7 @@ func (r RedisConfig) Addr() string {
 func LoadConfig() *Config {
 	var cfg Config
 
-	err := cleanenv.ReadConfig("../../.env", &cfg)
+	err := cleanenv.ReadConfig(".env", &cfg)
 	if err != nil {
 		slog.Info(".env file not found, reading from system env variables")
 		if errEnv := cleanenv.ReadEnv(&cfg); errEnv != nil {
