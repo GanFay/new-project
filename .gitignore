@@ -4,3 +4,4 @@ postgres-data
 split-core/out
 /go.work
 /go.work.sum
+README_old.md
